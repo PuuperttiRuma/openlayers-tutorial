@@ -2,6 +2,12 @@ import { Map as OLMap, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { useEffect, useRef } from "react";
+import { DragRotate } from "ol/interaction";
+import {
+  altKeyOnly,
+  altShiftKeysOnly,
+  shiftKeyOnly,
+} from "ol/events/condition";
 
 function Map() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -22,11 +28,13 @@ function Map() {
         }),
       ],
       target: mapRef.current,
+      keyboardEventTarget: document,
     });
 
+    // Coordinate Overlay
     const popup = new Overlay({ element: coordOverlayRef.current });
-
     map.addOverlay(popup);
+
     map.on("singleclick", function (e) {
       const clickedCoordinate = e.coordinate;
       console.log("Clicked", clickedCoordinate);
@@ -36,6 +44,10 @@ function Map() {
         popupTextElement.innerHTML = clickedCoordinate.join(", ");
       }
     });
+
+    // DragRotate
+    const dragRotate = new DragRotate({ condition: shiftKeyOnly });
+    map.addInteraction(dragRotate);
 
     return () => {
       map.setTarget(undefined);
