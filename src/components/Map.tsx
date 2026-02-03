@@ -2,12 +2,9 @@ import { Map as OLMap, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { useEffect, useRef } from "react";
-import { DragRotate } from "ol/interaction";
-import {
-  altKeyOnly,
-  altShiftKeysOnly,
-  shiftKeyOnly,
-} from "ol/events/condition";
+import { DragRotate, Draw } from "ol/interaction";
+import { shiftKeyOnly } from "ol/events/condition";
+import { GeoJSON } from "ol/format";
 
 function Map() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -49,6 +46,21 @@ function Map() {
     const dragRotate = new DragRotate({ condition: shiftKeyOnly });
     map.addInteraction(dragRotate);
 
+    // Draw
+    const draw = new Draw({
+      type: "Polygon",
+      freehand: true,
+    });
+    map.addInteraction(draw);
+
+    // Get drawn shape
+    draw.on("drawend", (e) => {
+      let parser = new GeoJSON();
+      let drawnFeatures = parser.writeFeaturesObject([e.feature]);
+      console.log(drawnFeatures.features[0].geometry.coordinates[0]);
+    });
+
+    // Cleanup the map for React useEffect
     return () => {
       map.setTarget(undefined);
     };
