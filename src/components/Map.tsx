@@ -6,6 +6,7 @@ import { DragRotate, Draw } from "ol/interaction";
 import { shiftKeyOnly } from "ol/events/condition";
 import { GeoJSON } from "ol/format";
 import { defaults, MousePosition, OverviewMap } from "ol/control";
+import LayerGroup from "ol/layer/Group";
 
 function Map() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -28,18 +29,37 @@ function Map() {
 
     const map = new OLMap({
       view: new View({
-        center: [15080385, 13567433],
-        zoom: 5,
+        center: [2863945.762089757, 8915894.4551909],
+        zoom: 7,
       }),
       layers: [
         new TileLayer({
           source: new OSM(),
+          zIndex: 0,
+          visible: true,
         }),
       ],
       target: mapRef.current,
       keyboardEventTarget: document,
       controls: defaults().extend([mousePositionControl, overviewMapControl]),
     });
+
+    const layerGroup = new LayerGroup({
+      layers: [
+        new TileLayer({
+          source: new OSM({
+            url: "https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+          }),
+          zIndex: 1,
+          visible: true,
+          extent: [
+            2142819.350421076, 8304392.810321281, 3536477.50743043,
+            9269998.819106333,
+          ],
+        }),
+      ],
+    });
+    map.addLayer(layerGroup);
 
     // Coordinate Overlay
     const popup = new Overlay({ element: coordOverlayRef.current });
