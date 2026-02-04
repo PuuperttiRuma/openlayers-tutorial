@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { DragRotate, Draw } from "ol/interaction";
 import { shiftKeyOnly } from "ol/events/condition";
 import { GeoJSON } from "ol/format";
+import { defaults, MousePosition, OverviewMap } from "ol/control";
 
 function Map() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -13,6 +14,17 @@ function Map() {
   useEffect(() => {
     if (!mapRef.current) return;
     if (!coordOverlayRef.current) return;
+
+    // Controls
+    const mousePositionControl = new MousePosition();
+    const overviewMapControl = new OverviewMap({
+      collapsed: false,
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+    });
 
     const map = new OLMap({
       view: new View({
@@ -26,6 +38,7 @@ function Map() {
       ],
       target: mapRef.current,
       keyboardEventTarget: document,
+      controls: defaults().extend([mousePositionControl, overviewMapControl]),
     });
 
     // Coordinate Overlay
