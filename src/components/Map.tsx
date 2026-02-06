@@ -1,6 +1,6 @@
 import { Map as OLMap, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
-import { OSM, TileArcGISRest } from "ol/source";
+import { OSM, TileArcGISRest, TileWMS } from "ol/source";
 import { useEffect, useRef } from "react";
 // import { DragRotate, Draw } from "ol/interaction";
 // import { altKeyOnly, shiftKeyOnly } from "ol/events/condition";
@@ -64,6 +64,21 @@ function Map() {
               "Reference/World_Transportation/MapServer",
           }),
           zIndex: 2,
+        }),
+        new TileLayer({
+          source: new TileWMS({
+            url: "https://bio.discomap.eea.europa.eu/arcgis/services/Internal/Basemap_EU_27_WM/MapServer/WMSServer?",
+            params: {
+              LAYERS: 2,
+              FORMAT: "image/png",
+              TRANSPARENT: true,
+            },
+          }),
+          zIndex: 3,
+          extent: [
+            2142819.350421076, 8304392.810321281, 3536477.50743043,
+            9269998.819106333,
+          ],
         }),
       ],
     });
