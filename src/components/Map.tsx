@@ -1,10 +1,10 @@
 import { Map as OLMap, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
-import { OSM } from "ol/source";
+import { OSM, TileArcGISRest } from "ol/source";
 import { useEffect, useRef } from "react";
-import { DragRotate, Draw } from "ol/interaction";
-import { shiftKeyOnly } from "ol/events/condition";
-import { GeoJSON } from "ol/format";
+// import { DragRotate, Draw } from "ol/interaction";
+// import { altKeyOnly, shiftKeyOnly } from "ol/events/condition";
+// import { GeoJSON } from "ol/format";
 import { defaults, MousePosition, OverviewMap } from "ol/control";
 import LayerGroup from "ol/layer/Group";
 
@@ -57,6 +57,14 @@ function Map() {
             9269998.819106333,
           ],
         }),
+        new TileLayer({
+          source: new TileArcGISRest({
+            url:
+              "https://server.arcgisonline.com/arcgis/rest/services/" +
+              "Reference/World_Transportation/MapServer",
+          }),
+          zIndex: 2,
+        }),
       ],
     });
     map.addLayer(layerGroup);
@@ -75,23 +83,24 @@ function Map() {
       }
     });
 
-    // DragRotate
-    const dragRotate = new DragRotate({ condition: shiftKeyOnly });
-    map.addInteraction(dragRotate);
+    // // DragRotate
+    // const dragRotate = new DragRotate({ condition: shiftKeyOnly });
+    // map.addInteraction(dragRotate);
 
-    // Draw
-    const draw = new Draw({
-      type: "Polygon",
-      freehand: true,
-    });
-    map.addInteraction(draw);
-
-    // Get drawn shape
-    draw.on("drawend", (e) => {
-      let parser = new GeoJSON();
-      let drawnFeatures = parser.writeFeaturesObject([e.feature]);
-      console.log(drawnFeatures.features[0].geometry.coordinates[0]);
-    });
+    // // Draw
+    // const draw = new Draw({
+    //   type: "Polygon",
+    //   freehand: true,
+    //   condition: altKeyOnly,
+    // });
+    // map.addInteraction(draw);
+    //
+    // // Get drawn shape
+    // draw.on("drawend", (e) => {
+    //   let parser = new GeoJSON();
+    //   let drawnFeatures = parser.writeFeaturesObject([e.feature]);
+    //   console.log(drawnFeatures.features[0].geometry.coordinates[0]);
+    // });
 
     // Cleanup the map for React useEffect
     return () => {
