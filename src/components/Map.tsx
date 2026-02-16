@@ -84,6 +84,16 @@ function Map() {
     });
     map.addLayer(layerGroup);
 
+    const worldTransportAttribution = "ESRI";
+    const worldTransportSource = layerGroup.getLayersArray()[1].getSource();
+    if (worldTransportSource) {
+      worldTransportSource.setAttributions(worldTransportAttribution);
+    }
+    const lakesLayer = layerGroup.getLayersArray()[2];
+    if (lakesLayer) {
+      lakesLayer.set("maxZoom", 8);
+    }
+
     // Coordinate Overlay
     const popup = new Overlay({ element: coordOverlayRef.current });
     map.addOverlay(popup);
