@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
 import { defaults, MousePosition, OverviewMap } from "ol/control";
 import LayerGroup from "ol/layer/Group";
 
-function Map() {
+const Map = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const coordOverlayRef = useRef<HTMLDivElement>(null);
 
@@ -132,15 +132,15 @@ function Map() {
       map.setTarget(undefined);
     };
   }, []);
+  // <div ref={coordOverlayRef} className="popup-container">
+  // <p id="popup-coordinates"></p>
+  // </div>
 
   return (
     <>
-      <div ref={coordOverlayRef} className="popup-container">
-        <p id="popup-coordinates"></p>
-      </div>
       <div ref={mapRef} className="map-container"></div>
     </>
   );
-}
+};
 
 export default Map;
